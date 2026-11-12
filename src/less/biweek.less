@@ -1,0 +1,269 @@
+// Styles for the Bi-week view (this week + next week, 14 day boxes).
+//
+// Items are drawn as bars in a lane overlay on top of the day grid, so a period
+// covering several days reads as one connected bar instead of one chip per day.
+
+.bc-biweek {
+  // Width of the left column carrying the 本周 / 下周 labels
+  --bc-biweek-gutter-w: 72px;
+  // Space kept at the top of a week row for the day numbers. Must cover the
+  // cell padding plus the day number height, since the lane overlay starts here.
+  --bc-biweek-lane-top: 30px;
+
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--size-4-2);
+
+  .bc-biweek-head,
+  .bc-biweek-row {
+    display: grid;
+    grid-template-columns: var(--bc-biweek-gutter-w) repeat(7, minmax(0, 1fr));
+  }
+
+  .bc-biweek-head {
+    flex: 0 0 auto;
+    border-top: 1px solid var(--background-modifier-border);
+    border-left: 1px solid var(--background-modifier-border);
+  }
+
+  // Both weeks split the remaining height so the grid fills the pane instead of
+  // collapsing to a fixed row height.
+  .bc-biweek-row {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 150px;
+    border-left: 1px solid var(--background-modifier-border);
+  }
+
+  .bc-biweek-gutter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--size-2-2);
+    border-right: 1px solid var(--background-modifier-border);
+    border-bottom: 1px solid var(--background-modifier-border);
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+    font-weight: var(--font-semibold);
+  }
+
+  .bc-biweek-weekday {
+    padding: var(--size-2-1) var(--size-2-2);
+    border-right: 1px solid var(--background-modifier-border);
+    border-bottom: 1px solid var(--background-modifier-border);
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+    font-weight: var(--font-semibold);
+    text-align: center;
+  }
+
+  // Day cell: the background grid, the day number and the click/drag target
+  .bc-biweek-cell {
+    min-width: 0;
+    min-height: 0;
+    padding: var(--size-2-1);
+    border-right: 1px solid var(--background-modifier-border);
+    border-bottom: 1px solid var(--background-modifier-border);
+    cursor: pointer;
+    overflow: hidden;
+
+    &:hover {
+      background-color: var(--background-modifier-hover);
+    }
+
+    &.is-weekend {
+      background-color: var(--background-modifier-active-hover, rgba(0, 0, 0, 0.04));
+    }
+
+    // Today uses a warm hue instead of the accent, so the day marker never
+    // reads as one of the accent-coloured event bars.
+    &.is-today .bc-biweek-daynum {
+      background-color: var(--color-orange);
+      color: var(--text-on-accent);
+      border-radius: var(--radius-s);
+      padding: 0 5px;
+      font-weight: var(--font-semibold);
+    }
+
+    // Day range being dragged out, mirrors the month view's selection
+    &.is-selected {
+      background-color: var(--background-modifier-active-hover, rgba(0, 0, 0, 0.08));
+      box-shadow: inset 0 0 0 1px var(--interactive-accent);
+    }
+
+    // Wide band showing every day the dragged item would land on
+    &.is-drop-target {
+      background-color: var(--background-modifier-active-hover, rgba(0, 0, 0, 0.08));
+      box-shadow: inset 0 2px 0 var(--interactive-accent), inset 0 -2px 0 var(--interactive-accent);
+    }
+  }
+
+  .bc-biweek-daynum {
+    display: flex;
+    align-items: center;
+    gap: var(--size-2-1);
+    align-self: flex-start;
+    height: 20px;
+    font-size: var(--font-ui-smaller);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bc-biweek-month {
+    color: var(--text-muted);
+  }
+
+  // Lane overlay: aligned with the seven columns, sitting below the day numbers
+  .bc-biweek-lanes {
+    position: absolute;
+    left: var(--bc-biweek-gutter-w);
+    right: 0;
+    top: var(--bc-biweek-lane-top);
+    bottom: 0;
+    overflow: hidden;
+    // Only the bars react to the pointer, so clicks land on the day cells
+    pointer-events: none;
+  }
+
+  .bc-biweek-bar {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 0 var(--size-2-2);
+    border-radius: var(--radius-s);
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    font-size: var(--font-ui-small);
+    cursor: pointer;
+    pointer-events: auto;
+
+    &:hover {
+      filter: brightness(1.1);
+    }
+
+    // The period runs past this week row: that side has no rounded cap
+    &.continues-prior {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &.continues-after {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &.is-done .bc-biweek-bar-title {
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    // The bar being dragged fades while its preview shows the landing spot
+    &.is-dragging {
+      opacity: 0.45;
+    }
+
+    // Vertical handles on both ends, revealed on hover like the month view.
+    // Pulling one changes only that end of the period.
+    .bc-biweek-resize {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      bottom: 0;
+      width: 8px;
+      cursor: ew-resize;
+      opacity: 0;
+      transition: opacity 100ms ease;
+
+      // The visible sliver, kept thinner than the hit area
+      &::after {
+        content: '';
+        position: absolute;
+        top: 4px;
+        bottom: 4px;
+        width: 4px;
+        border-radius: var(--radius-s);
+        background-color: var(--text-on-accent);
+      }
+
+      &.bc-biweek-resize-l {
+        left: 0;
+
+        &::after {
+          left: 2px;
+        }
+      }
+
+      &.bc-biweek-resize-r {
+        right: 0;
+
+        &::after {
+          right: 2px;
+        }
+      }
+    }
+
+    &:hover .bc-biweek-resize {
+      opacity: 0.85;
+    }
+  }
+
+  // Landing spot of a drag: same size as the dragged bar, with its title
+  .bc-biweek-bar-preview {
+    z-index: 1;
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: 1px dashed var(--text-on-accent);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  // Ghost trailing the pointer while dragging, like the native week-view drag
+  .bc-biweek-ghost {
+    position: fixed;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 var(--size-2-2);
+    border-radius: var(--radius-s);
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    font-size: var(--font-ui-small);
+    box-shadow: var(--shadow-s);
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  // "+3天" marker for a period reaching past the visible two weeks
+  .bc-biweek-overflow {
+    flex: 0 0 auto;
+    padding: 0 4px;
+    border-radius: var(--radius-s);
+    background-color: rgba(0, 0, 0, 0.25);
+    font-size: var(--font-ui-smaller);
+    white-space: nowrap;
+  }
+
+  .bc-biweek-bar-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .bc-biweek-branch {
+    flex: 0 0 auto;
+    opacity: 0.7;
+  }
+
+  .bc-biweek-check {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+}

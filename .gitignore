@@ -1,0 +1,11 @@
+node_modules/
+dist/
+data.json
+.vscode/
+*.code-workspace
+desktop.ini
+.claude/
+.codegraph/
+.lingma/
+.github/workflows/release.yml
+*.rar

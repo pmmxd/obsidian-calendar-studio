@@ -1,0 +1,382 @@
+// Styles for the custom Agenda and Gantt views, plus the range tab.
+
+.bc-range-tab {
+  margin-left: auto;
+}
+
+// ---------------- Agenda ----------------
+.bc-agenda {
+  height: 100%;
+  overflow: auto;
+  padding: var(--size-4-2);
+
+  .bc-agenda-empty {
+    color: var(--text-muted);
+    padding: var(--size-4-4);
+    text-align: center;
+  }
+
+  .bc-agenda-toolbar {
+    margin-bottom: var(--size-4-2);
+  }
+
+  .bc-agenda-add {
+    cursor: pointer;
+  }
+
+  .bc-agenda-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: var(--size-2-2) var(--size-4-2);
+    border-bottom: 1px solid var(--background-modifier-border);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    color: var(--text-muted);
+    font-weight: var(--font-semibold);
+  }
+
+  // Date column: wide enough to show "YYYY-MM-DD ~ YYYY-MM-DD" on one line
+  .bc-agenda-date-col {
+    white-space: nowrap;
+    min-width: 200px;
+    width: 200px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bc-agenda-check-col {
+    width: 28px;
+    text-align: center;
+
+    .task-list-item-checkbox {
+      margin: 0;
+    }
+  }
+
+  .bc-agenda-row {
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--background-modifier-hover);
+    }
+
+    &.is-done .bc-agenda-title-col {
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+
+    // Sub-items read as a child of the row above
+    &.is-child .bc-agenda-title-col {
+      color: var(--text-muted);
+    }
+  }
+}
+
+// ---------------- Sub-items / periods editors ----------------
+.bc-subitems,
+.bc-periods {
+  margin: var(--size-4-2) 0;
+
+  .bc-subitem-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--size-4-2);
+    margin-bottom: var(--size-2-2);
+    font-weight: var(--font-semibold);
+  }
+
+  .bc-subitem-empty {
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+  }
+}
+
+.bc-subitem-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2-1);
+  padding: var(--size-2-2);
+  margin-bottom: var(--size-2-2);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+}
+
+.bc-subitem-top,
+.bc-subitem-period,
+.bc-period-row {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2-2);
+}
+
+.bc-subitem-top,
+.bc-period-row {
+  margin-bottom: var(--size-2-1);
+}
+
+.bc-period-row {
+  padding: var(--size-2-2) 0;
+}
+
+.bc-subitem-title {
+  flex: 1;
+}
+
+.bc-subitem-type {
+  flex: 0 0 auto;
+}
+
+.bc-period-date,
+.bc-subitem-date {
+  flex: 0 0 auto;
+}
+
+.bc-period-time,
+.bc-subitem-time {
+  flex: 0 0 auto;
+  width: 6em;
+}
+
+.bc-period-sep,
+.bc-subitem-sep {
+  color: var(--text-muted);
+}
+
+.bc-row-remove,
+.bc-subitem-remove {
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+.bc-modal-buttons {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  gap: var(--size-2-2);
+  margin-top: var(--size-4-2);
+}
+
+.bc-event-edit {
+  min-width: 420px;
+}
+
+// Child marker drawn on events inside the month / week / day grids
+.event-child-marker {
+  flex: 0 0 auto;
+  margin-right: 2px;
+  opacity: 0.7;
+}
+
+// ---------------- Gantt ----------------
+.bc-gantt {
+  height: 100%;
+  overflow: auto;
+  padding: var(--size-4-2);
+
+  .bc-gantt-empty {
+    color: var(--text-muted);
+    padding: var(--size-4-4);
+    text-align: center;
+  }
+
+  .bc-gantt-toolbar {
+    margin-bottom: var(--size-4-2);
+  }
+
+  .bc-gantt-add {
+    cursor: pointer;
+  }
+
+  .bc-gantt-grid {
+    width: max-content;
+  }
+
+  .bc-gantt-header,
+  .bc-gantt-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--background-modifier-border);
+  }
+
+  // The header keeps a top border too so the grid is fully boxed
+  .bc-gantt-header {
+    border-top: 1px solid var(--background-modifier-border);
+  }
+
+  .bc-gantt-name {
+    flex: 0 0 auto;
+    padding: var(--size-2-1) var(--size-4-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid var(--background-modifier-border);
+    display: flex;
+    align-items: center;
+  }
+
+  .bc-gantt-header .bc-gantt-name {
+    color: var(--text-muted);
+    font-weight: var(--font-semibold);
+  }
+
+  // Sub-items: one guide column per nesting level, drawn as a vertical line with
+  // an elbow on the last child, so the branch back to the parent is obvious.
+  .bc-gantt-guides {
+    display: flex;
+    flex: 0 0 auto;
+    align-self: stretch;
+  }
+
+  .bc-gantt-guide {
+    position: relative;
+    flex: 0 0 auto;
+    width: 18px;
+
+    // Extending past the row edges makes consecutive siblings read as one rule
+    &::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: -1px;
+      bottom: -1px;
+      border-left: 1px solid var(--background-modifier-border);
+    }
+
+    // The last child closes the branch
+    &.is-last::before {
+      bottom: 50%;
+    }
+
+    &.is-last::after {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      width: 10px;
+      border-top: 1px solid var(--background-modifier-border);
+    }
+  }
+
+  .bc-gantt-row.has-children .bc-gantt-name-text {
+    font-weight: var(--font-semibold);
+  }
+
+  .bc-gantt-row.is-child .bc-gantt-name-text {
+    color: var(--text-muted);
+  }
+
+  // Completion checkbox in front of the event name
+  .bc-gantt-check,
+  .bc-gantt-check-placeholder {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    margin-right: var(--size-2-2);
+  }
+
+  .bc-gantt-check {
+    margin-top: 0;
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+
+  .bc-gantt-name-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Completed events are struck through in the name column too
+  .bc-gantt-row.is-done .bc-gantt-name-text {
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+
+  // Day grid track (background cells live here; the bar is absolutely positioned)
+  .bc-gantt-track {
+    position: relative;
+    display: flex;
+    height: 28px;
+  }
+
+  .bc-gantt-daycell {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    border-right: 1px solid var(--background-modifier-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Weekend columns are shaded darker
+  .bc-gantt-weekend {
+    background-color: var(--background-modifier-active-hover, rgba(0, 0, 0, 0.08));
+  }
+
+  .bc-gantt-today {
+    box-shadow: inset 0 0 0 1px var(--interactive-accent);
+  }
+
+  .bc-gantt-daynum {
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+  }
+
+  // Weekend day numbers get a darker background chip
+  .bc-gantt-weekend .bc-gantt-daynum {
+    background-color: var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    padding: 0 4px;
+    color: var(--text-normal);
+  }
+
+  // The event bar fills the day cells it spans (grid look)
+  .bc-gantt-bar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    cursor: grab;
+    user-select: none;
+
+    &.is-done .bc-gantt-fill {
+      opacity: 0.5;
+    }
+  }
+
+  // Period being drawn on the row; not interactive while it is created
+  .bc-gantt-bar-preview {
+    cursor: crosshair;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .bc-gantt-fill {
+    flex: 0 0 auto;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: var(--interactive-accent);
+    border-right: 1px solid var(--background-modifier-border);
+  }
+
+  .bc-gantt-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+
+    &.bc-gantt-handle-l {
+      left: 0;
+    }
+    &.bc-gantt-handle-r {
+      right: 0;
+    }
+  }
+}
